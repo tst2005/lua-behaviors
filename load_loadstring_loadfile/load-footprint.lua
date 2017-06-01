@@ -46,42 +46,21 @@ local function testwith(G, luacmd)
 		local ok, ts = pcall(load, "return 'foo1'", nil)
 		result("- textcode (string)", ok and ts and ts()=="foo1")
 
-		-- textcode (string) + custom env
-		local e = {bar="Bar1e"}
-		local ok, ets = pcall(load, "return bar", nil, nil, e)
-		result("- textcode (string) + custom_env", ok and ets and ets()=="Bar1e")
-
-		-- textcode (function)
+		-- textcode (reader)
 		local f1 = v2reader("return 'foo1.2'")
 		local ok, fs = pcall(load, f1, nil)
-		result("- textcode (function)", ok and fs and fs()=="foo1.2")
-
-		-- textcode (function) + custom env
-		local f1 = v2reader("return string")
-		local e = {string="Bar2e"}
-		local ok, efs = pcall(load, f1, nil, nil, e)
-		result("- textcode (function) + custom env", ok and efs and efs()=="Bar2e")
+		result("- textcode (reader)", ok and fs and fs()=="foo1.2")
 
 		-- bytecode (string)
 		local f = function() return "foo2" end
 		local ok, tb = pcall(load, string.dump(f), nil)
 		result("- bytecode (string)", ok and tb and tb()=="foo2")
 
---		-- bytecode (string) + custom env
---		local e = {string="Bar2"}
---		--assert(_G.bar==nil)
---		local f = function() return string end
---		local ok, etb = pcall(load, string.dump(f), nil)
---		result("- bytecode (string) + custom env", ok and etb and etb()=="Bar2", (ok and etb and etb()==string) and "(return _G.bar instead of env.bar)" or "")
-
-		-- bytecode (function)
+		-- bytecode (reader)
 		local f = function() return "foo2.2" end
 		local f2 = v2reader(string.dump(f))
 		local ok, fb = pcall(load, f2, nil)
-		result("- bytecode (function)", ok and fb and fb()=="foo2.2")
-
---		-- bytecode (function) + custom env
---		result("- bytecode (function) + custom env", "skip", "see 'bytecode (function) + custom env'")
+		result("- bytecode (reader)", ok and fb and fb()=="foo2.2")
 
 		-- in _G, textcode (string)
 		_G.bar="Bar1"
@@ -94,9 +73,30 @@ local function testwith(G, luacmd)
 
 		local ok, ts = pcall(load, "return bar", nil, nil, _G)
 		result("-- textcode (string) + _G env (3)", ok and ts and ts()=="Bar1")
-
 		_G.bar=nil
 		assert(bar==nil)
+
+		-- textcode (string) + custom env
+		local e = {bar="Bar1e"}
+		local ok, ets = pcall(load, "return bar", nil, nil, e)
+		result("- textcode (string) + custom_env", ok and ets and ets()=="Bar1e")
+
+		-- textcode (reader) + custom env
+		local f1 = v2reader("return string")
+		local e = {string="Bar2e"}
+		local ok, efs = pcall(load, f1, nil, nil, e)
+		result("- textcode (reader) + custom env", ok and efs and efs()=="Bar2e")
+
+--		-- bytecode (string) + custom env
+--		local e = {string="Bar2"}
+--		--assert(_G.bar==nil)
+--		local f = function() return string end
+--		local ok, etb = pcall(load, string.dump(f), nil)
+--		result("- bytecode (string) + custom env", ok and etb and etb()=="Bar2", (ok and etb and etb()==string) and "(return _G.bar instead of env.bar)" or "")
+
+--		-- bytecode (reader) + custom env
+--		result("- bytecode (reader) + custom env", "skip", "see 'bytecode (reader) + custom env'")
+
 	end
 
 	result("load",		load and "exists" or "missing")
