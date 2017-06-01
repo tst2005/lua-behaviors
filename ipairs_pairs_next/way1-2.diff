@@ -1,0 +1,31 @@
+
+main <way1.lua:0,0> (2 instructions, 8 bytes at 0x2006950)					   |	main <way2.lua:0,0> (2 instructions, 8 bytes at 0x3a10600)
+0+ params, 2 slots, 0 upvalues, 1 local, 0 constants, 1 function					0+ params, 2 slots, 0 upvalues, 1 local, 0 constants, 1 function
+	1	[7]	CLOSURE  	0 0	; 0x2006bb0					   |		1	[7]	CLOSURE  	0 0	; 0x3a10860
+	2	[7]	RETURN   	0 1									2	[7]	RETURN   	0 1
+
+function <way1.lua:1,7> (17 instructions, 68 bytes at 0x2006bb0)				   |	function <way2.lua:1,7> (15 instructions, 60 bytes at 0x3a10860)
+1 param, 5 slots, 0 upvalues, 2 locals, 3 constants, 0 functions				   |	1 param, 3 slots, 0 upvalues, 1 local, 2 constants, 1 function
+	1	[2]	GETGLOBAL	1 -1	; getmetatable					   |		1	[3]	GETGLOBAL	1 -1	; getmetatable
+	2	[2]	MOVE     	2 0							   |		2	[3]	MOVE     	2 0
+	3	[2]	CALL     	1 2 2							   |		3	[3]	CALL     	1 2 2
+	4	[3]	TEST     	1 0 0							   |		4	[3]	TEST     	1 0 1
+	5	[3]	JMP      	7	; to 13						   |		5	[3]	JMP      	1	; to 7
+	6	[3]	GETTABLE 	2 1 -2	; "__pairs"					   |		6	[3]	NEWTABLE 	1 0 0
+	7	[3]	TEST     	2 0 0							   |		7	[3]	GETTABLE 	1 1 -2	; "__pairs"
+	8	[3]	JMP      	4	; to 13						   |		8	[4]	TEST     	1 0 1
+	9	[4]	GETTABLE 	2 1 -2	; "__pairs"					   |		9	[4]	JMP      	2	; to 12
+	10	[4]	MOVE     	3 0							   |		10	[5]	CLOSURE  	1 0	; 0x3a10ce0
+	11	[4]	TAILCALL 	2 2 0							   |		11	[5]	MOVE     	0 0
+	12	[4]	RETURN   	2 0							   |		12	[6]	MOVE     	2 0
+	13	[6]	GETGLOBAL	2 -3	; next						   |		13	[6]	TAILCALL 	1 2 0
+	14	[6]	MOVE     	3 0							   |		14	[6]	RETURN   	1 0
+	15	[6]	LOADNIL  	4 4							   |		15	[7]	RETURN   	0 1
+	16	[6]	RETURN   	2 4							   |
+	17	[7]	RETURN   	0 1							   |	function <way2.lua:5,5> (5 instructions, 20 bytes at 0x3a10ce0)
+												   >	0 params, 3 slots, 1 upvalue, 0 locals, 1 constant, 0 functions
+												   >		1	[5]	GETGLOBAL	0 -1	; next
+												   >		2	[5]	GETUPVAL 	1 0	; t
+												   >		3	[5]	LOADNIL  	2 2
+												   >		4	[5]	RETURN   	0 4
+												   >		5	[5]	RETURN   	0 1
