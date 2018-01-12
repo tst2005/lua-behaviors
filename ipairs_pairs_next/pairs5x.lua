@@ -28,7 +28,7 @@ local pairs52simple = pairs53simple
 
 --- shadow iterator ---
 
--- use pairs, but never expose the table `t` or the function `next`
+-- use pairs, but never expose the table `t` or the function `next`; allow to rewind or replay sequence
 local function pairs51shadow(t)
 	local function f(_, k)
 		return next(t, k)
@@ -36,11 +36,12 @@ local function pairs51shadow(t)
 	return f, "shadow", nil
 end
 
--- same than shadow pairs, byt also deny the way to call the handler with other key value
+-- same than shadow pairs, but also deny the way to call the handler with other key value
 -- each call return the next result
 local function pairs51shadowest(t)
 	local k
-	local function f()
+	local function f(_, k0)
+		--assert(k0==k, "seeking with pairs is not allowed")
 		local k2,v2 = next(t, k)
 		k=k2
 		return k2, v2
